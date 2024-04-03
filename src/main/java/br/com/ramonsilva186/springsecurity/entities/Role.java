@@ -1,7 +1,11 @@
 package br.com.ramonsilva186.springsecurity.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "tb_roles")
 public class Role {
@@ -10,5 +14,21 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long roleId;
-    private String nome;
+    private String name;
+
+    public enum Values {
+        ADMIN(1L),
+        BASIC(2L);
+
+        long roleId;
+
+        Values(long roleId) {
+            this.roleId = roleId;
+        }
+
+        public long getRoleId() {
+            return roleId;
+        }
+
+    }
 }

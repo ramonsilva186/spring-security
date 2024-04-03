@@ -1,10 +1,13 @@
 package br.com.ramonsilva186.springsecurity.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 import java.util.UUID;
-
+@Getter
+@Setter
 @Entity
 @Table(name = "tb_users")
 public class User {
