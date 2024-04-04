@@ -1,8 +1,10 @@
 package br.com.ramonsilva186.springsecurity.entities;
 
+import br.com.ramonsilva186.springsecurity.dto.LoginRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 import java.util.UUID;
@@ -23,5 +25,7 @@ public class User {
     @JoinTable(name = "tb_users_roles",  joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-
+    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder) {
+            return passwordEncoder.matches(loginRequest.password(), this.password);
+    }
 }
