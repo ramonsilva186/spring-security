@@ -7,7 +7,9 @@ import br.com.ramonsilva186.springsecurity.repository.RoleRepository;
 import br.com.ramonsilva186.springsecurity.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +34,8 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/users")
     @Transactional
+    @PostMapping("/users")
     public ResponseEntity<Void> newUser(@RequestBody CreateUserDto dto) {
 
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
@@ -54,7 +56,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    //@PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public ResponseEntity<List<User>> listUsers() {
         var users = userRepository.findAll();
         System.out.println(users);
