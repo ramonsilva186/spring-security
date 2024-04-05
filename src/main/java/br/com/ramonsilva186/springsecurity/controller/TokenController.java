@@ -2,6 +2,7 @@ package br.com.ramonsilva186.springsecurity.controller;
 
 import br.com.ramonsilva186.springsecurity.dto.LoginRequest;
 import br.com.ramonsilva186.springsecurity.dto.LoginResponse;
+import br.com.ramonsilva186.springsecurity.entities.Role;
 import br.com.ramonsilva186.springsecurity.repository.UserRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestController
 public class TokenController {
     private final JwtEncoder jwtEncoder;
     private final UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
+
     private TokenController(JwtEncoder jwtEncoder,
                             UserRepository userRepository,
                             BCryptPasswordEncoder passwordEncoder) {
@@ -40,11 +43,17 @@ public class TokenController {
         var now = Instant.now();
         var expiresIn = 300L;
 
+        var scopes = user.get().getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
+
         var claims = JwtClaimsSet.builder()
                 .issuer("mybackend")
                 .subject(user.get().getUserId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
+                //.claim("scope", scopes)
                 .build();
 
         var jwtValue = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
